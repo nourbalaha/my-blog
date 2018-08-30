@@ -118,6 +118,30 @@ def logout():
 def dashboard():
     return render_template("dashboard.html")
 
+#ARTICLE FORM CLASS
+class ArticleForm(Form):
+    title = StringField("Title", [validators.Length(min=1, max=200)])
+    body = TextAreaField("Body", [validators.Length(min=30)])
+
+
+@app.route("/add_article ", methods=["GET", "POST"])
+@is_logged_in
+def add_article():
+    form = ArticleForm(request.form)
+    if request.methode == "POST" and form.validate():
+        title = form.title.data
+        body = form.body.data
+
+        eng = create_engine('postgresql:///articles')
+        con = eng.connect()
+        con.execute("INSERT INTO articles(title,body,author) VALUES(%s,%s,%s)",(title,body,session["username"]))
+        con.close()
+
+        flash("Article created","success")
+
+        return redirect(url_for("dashboard"))
+    return render_template("add_article.html", form=form)
+
 if __name__ == '__main__':
     app.secret_key="12345"
     app.run(debug=True)
