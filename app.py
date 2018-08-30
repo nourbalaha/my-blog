@@ -75,16 +75,27 @@ def login():
 
             if sha256_crypt.verify(password_candidate,password):
                 app.logger.info("PASSWORD MATCHED")
+                session["logged_in"]=True
+                session["username"]=username
+
+                flash("You are now logged in","success")
+                return redirect(url_for("dashboard"))
             else:
                 error="PASSWORD NOT  MATCHED"
-                return render_template("login.html",error)
+                return render_template("login.html",error=error)
+                
+                con.close()
+
         else:
             error="NO USER"
-            return render_template("login.html",error)
+            return render_template("login.html",error=error)
         
-        con.close()
 
     return render_template("login.html")
+
+@app.route("/dashboard", methods=["GET", "POST"])
+def dashboard():
+    return render_template("dashboard.html")
 
 if __name__ == '__main__':
     app.secret_key="12345"
