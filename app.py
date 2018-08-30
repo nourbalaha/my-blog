@@ -24,7 +24,18 @@ def about():
 
 @app.route("/articles")
 def articles():
-    return render_template("articles.html", articles=Articles)
+    eng = create_engine('postgresql:///users')
+    con = eng.connect()
+    result = con.execute("select * from articles")
+    articles = result.fetchall()
+
+    if result>0:
+        return render_template("articles.html",articles=articles)
+    else:
+        msg = "No articles found"
+        return render_template("articles.html",msg = msg)
+
+    con.close()
 
 
 @app.route("/article/<string:id>")
@@ -84,12 +95,12 @@ def login():
             else:
                 error="PASSWORD NOT  MATCHED"
                 return render_template("login.html",error=error)
-                con.close()
 
         else:
             error="NO USER"
             return render_template("login.html",error=error)
         
+        con.close()
 
     return render_template("login.html")
 
@@ -116,7 +127,18 @@ def logout():
 @app.route("/dashboard", methods=["GET", "POST"])
 @is_logged_in
 def dashboard():
-    return render_template("dashboard.html")
+    eng = create_engine('postgresql:///users')
+    con = eng.connect()
+    result = con.execute("select * from articles")
+    articles = result.fetchall()
+
+    if result>0:
+        return render_template("dashboard.html",articles=articles)
+    else:
+        msg = "No articles found"
+        return render_template("dashboard.html",msg = msg)
+
+    con.close()
 
 #ARTICLE FORM CLASS
 class ArticleForm(Form):
