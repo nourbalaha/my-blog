@@ -151,7 +151,7 @@ class ArticleForm(Form):
     title = StringField("Title", [validators.Length(min=1, max=200)])
     body = TextAreaField("Body", [validators.Length(min=30)])
 
-
+#ADD ARTICLE
 @app.route("/add_article", methods=["GET", "POST"])
 @is_logged_in
 def add_article():
@@ -170,6 +170,35 @@ def add_article():
         return redirect(url_for("dashboard"))
 
     return render_template("add_article.html", form=form)
+
+#EDIT ARTICLE
+@app.route("/edit_article/<string:id>", methods=["GET", "POST"])
+@is_logged_in
+def edit_article(id):
+    eng = create_engine('postgresql:///users')
+    con = eng.connect()
+    result = con.execute("select * from articles where id=%s",[id])
+    article = result.fetchone()
+
+    form = ArticleForm(request.form)
+
+    form.title.data = article["title"]
+    form.body.data = article["body"]
+
+    if request.method  == "POST" and form.validate():
+        title = request.form["title"]
+        body = request.form["body"]
+
+        eng = create_engine('postgresql:///users')
+        con = eng.connect()
+        con.execute("update articles set title=%s,body=%s where id=%s",(title,body,id))
+        con.close()
+
+        flash("Article updated","success")
+
+        return redirect(url_for("dashboard"))
+
+    return render_template("edit_article.html", form=form)
 
 if __name__ == '__main__':
     app.secret_key="12345"
