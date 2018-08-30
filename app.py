@@ -1,11 +1,12 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from data import Articles
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/users'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost:5432/users'
 db = SQLAlchemy(app)
 Articles = Articles()
 
@@ -38,19 +39,6 @@ class RegisterForm(Form):
     ), validators.EqualTo("confirm", message="Passwords do not match")])
     confirm = PasswordField("Confirm Password")
 
-class User(db.Model):
-    __users__= "users"
-    id=db.Column("id",db.Integer,primary_key=True)
-    name=db.Column("name",db.Unicode)
-    email=db.Column("email",db.Unicode)
-    username=db.Column("username",db.Unicode)
-    password=db.Column("password",db.Unicode)
-
-    def __init__(self,name,email,username,password):
-        self.name=name
-        self.email=email
-        self.username=username
-        self.password=password
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -61,15 +49,42 @@ def register():
         username = form.username.data
         password = sha256_crypt.encrypt(str(form.password.data))
 
-        new_user=User(name,email,username,password)
-        db.session.add(new_user)
-        db.session.commit()
-        
+        eng = create_engine('postgresql:///users')
+        con = eng.connect()
+        con.execute("INSERT INTO users(name,email,username,password) VALUES(%s,%s,%s,%s)",(name,email,username,password))
+        con.close()
+
         flash("You are now registered and can log in","success")
 
-        redirect(url_for("index"))
+        redirect(url_for("home"))
     return render_template("register.html", form=form)
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method=="POST": 
+        username=request.form["username"]
+        password_candidate=request.form["password"]
+
+        eng = create_engine('postgresql:///users')
+        con = eng.connect()
+        result = con.execute("SELECT * FROM users WHERE username=%s",[username])
+
+        if result > 0:
+            data= result.fetchone()
+            password=data["password"]
+
+            if sha256_crypt.verify(password_candidate,password):
+                app.logger.info("PASSWORD MATCHED")
+            else:
+                error="PASSWORD NOT  MATCHED"
+                return render_template("login.html",error)
+        else:
+            error="NO USER"
+            return render_template("login.html",error)
+        
+        con.close()
+
+    return render_template("login.html")
 
 if __name__ == '__main__':
     app.secret_key="12345"
