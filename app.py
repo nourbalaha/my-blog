@@ -124,15 +124,15 @@ class ArticleForm(Form):
     body = TextAreaField("Body", [validators.Length(min=30)])
 
 
-@app.route("/add_article ", methods=["GET", "POST"])
+@app.route("/add_article", methods=["GET", "POST"])
 @is_logged_in
 def add_article():
     form = ArticleForm(request.form)
-    if request.methode == "POST" and form.validate():
+    if request.method  == "POST" and form.validate():
         title = form.title.data
         body = form.body.data
 
-        eng = create_engine('postgresql:///articles')
+        eng = create_engine('postgresql:///users')
         con = eng.connect()
         con.execute("INSERT INTO articles(title,body,author) VALUES(%s,%s,%s)",(title,body,session["username"]))
         con.close()
@@ -140,6 +140,7 @@ def add_article():
         flash("Article created","success")
 
         return redirect(url_for("dashboard"))
+
     return render_template("add_article.html", form=form)
 
 if __name__ == '__main__':
