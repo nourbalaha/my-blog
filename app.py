@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
+from functools import wraps
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost:5432/users'
@@ -70,7 +71,7 @@ def login():
         con = eng.connect()
         result = con.execute("SELECT * FROM users WHERE username=%s",[username])
 
-        if result.fetchone() or result.fetchone()[0]:
+        if result>0:
             data= result.fetchone()
             password=data["password"]
 
@@ -83,7 +84,6 @@ def login():
             else:
                 error="PASSWORD NOT  MATCHED"
                 return render_template("login.html",error=error)
-                
                 con.close()
 
         else:
@@ -102,9 +102,11 @@ def is_logged_in(f):
         else:
             flash("Unauthorized please log in","danger")
             return redirect(url_for("login"))
+    return wrap
 
 #LOGOUT
 @app.route("/logout", methods=["GET", "POST"])
+@is_logged_in 
 def logout():
     session.clear()
     flash("You are now logged out","success")
@@ -112,6 +114,7 @@ def logout():
 
 #DASHBOARD
 @app.route("/dashboard", methods=["GET", "POST"])
+@is_logged_in
 def dashboard():
     return render_template("dashboard.html")
 
