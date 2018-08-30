@@ -40,7 +40,13 @@ def articles():
 
 @app.route("/article/<string:id>")
 def article(id):
-    return render_template("article.html", id=id)
+
+    eng = create_engine('postgresql:///users')
+    con = eng.connect()
+    result = con.execute("select * from articles where id=%s",[id])
+    article = result.fetchone()
+
+    return render_template("article.html", article=article)
 
 #REGISTRATION FORM
 class RegisterForm(Form):
