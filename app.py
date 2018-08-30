@@ -200,6 +200,18 @@ def edit_article(id):
 
     return render_template("edit_article.html", form=form)
 
+@app.route("/delete_article/<string:id>", methods=["POST"])
+@is_logged_in
+def delete_article(id):
+    eng = create_engine('postgresql:///users')
+    con = eng.connect()
+    con.execute("delete from articles where id=%s",[id])
+    con.close()
+
+    flash("Article deleted", "success")
+
+    return redirect(url_for("dashboard"))
+
 if __name__ == '__main__':
     app.secret_key="12345"
     app.run(debug=True)
