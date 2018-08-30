@@ -30,7 +30,7 @@ def articles():
 def article(id):
     return render_template("article.html", id=id)
 
-
+#REGISTRATION FORM
 class RegisterForm(Form):
     name = StringField("Name", [validators.Length(min=1, max=50)])
     email = StringField("Email", [validators.Length(min=6, max=50)])
@@ -39,7 +39,7 @@ class RegisterForm(Form):
     ), validators.EqualTo("confirm", message="Passwords do not match")])
     confirm = PasswordField("Confirm Password")
 
-
+#REGISTER
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm(request.form)
@@ -59,6 +59,7 @@ def register():
         redirect(url_for("home"))
     return render_template("register.html", form=form)
 
+#LOGIN
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method=="POST": 
@@ -69,7 +70,7 @@ def login():
         con = eng.connect()
         result = con.execute("SELECT * FROM users WHERE username=%s",[username])
 
-        if result:
+        if result.fetchone() or result.fetchone()[0]:
             data= result.fetchone()
             password=data["password"]
 
@@ -91,6 +92,16 @@ def login():
         
 
     return render_template("login.html")
+
+#CHECK IF USER LOGGED IN
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args,**kwargs):
+        if "logged_in" in session:
+            return f(*args,**kwargs)
+        else:
+            flash("Unauthorized please log in","danger")
+            return redirect(url_for("login"))
 
 #LOGOUT
 @app.route("/logout", methods=["GET", "POST"])
