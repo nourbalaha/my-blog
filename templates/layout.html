@@ -15,5 +15,9 @@
         {% include "includes/_messages.html" %}
         {% block body %} {% endblock %}
     </div>
+    <script src="//cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+    <script>
+    CKEDITOR.replace("editor")
+    </script>
 </body>
 </html>
