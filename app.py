@@ -69,12 +69,11 @@ def login():
         con = eng.connect()
         result = con.execute("SELECT * FROM users WHERE username=%s",[username])
 
-        if result > 0:
+        if result:
             data= result.fetchone()
             password=data["password"]
 
             if sha256_crypt.verify(password_candidate,password):
-                app.logger.info("PASSWORD MATCHED")
                 session["logged_in"]=True
                 session["username"]=username
 
@@ -93,6 +92,14 @@ def login():
 
     return render_template("login.html")
 
+#LOGOUT
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    session.clear()
+    flash("You are now logged out","success")
+    return redirect(url_for("login"))
+
+#DASHBOARD
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     return render_template("dashboard.html")
