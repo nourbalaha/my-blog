@@ -1,6 +1,47 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block body %}
+<!-- <img src="https://lh3.googleusercontent.com/B7NYogSPi05JmgzkG3gqyir2exUDVlqCdZe38_eUyVKpxLfxekqtdg5iJyw1SxV38Fyw3DGKfLBJ_PJwz3Ke62gmMCP7bLJWnGL8FA=s997-rw-no"
+        alt="Nour">
+<p>My name is: Nour Balaha.</p>
+<p>I am a software engineer in Tokyo.</p>
+<p>nourbalaha0@gmail.com.</p>
+<p>GitHub: https://github.com/nourbalaha/</p>
+<p>Twitter: @nourbalaha</p> -->
 
-{% block body %}
-        <h1>About us</h1>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illo nam obcaecati quod cum omnis amet ipsa, rem consectetur temporibus asperiores sunt quidem optio perferendis, ullam dolor ex animi atque quos.</p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+      <div class="card" style="width: 18rem;">
+        <div class="card-header text-center">
+          About me:
+        </div>
+        <img class="card-img-top" src="https://lh3.googleusercontent.com/B7NYogSPi05JmgzkG3gqyir2exUDVlqCdZe38_eUyVKpxLfxekqtdg5iJyw1SxV38Fyw3DGKfLBJ_PJwz3Ke62gmMCP7bLJWnGL8FA=s997-rw-no"
+          alt="Card image cap">
+        <div class="card-body">
+
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <p class="card-text">My name is: Nour Balaha.</p>
+            </li>
+            <li class="list-group-item">
+              <p class="card-text">I am a software engineer in Tokyo.</p>
+            </li>
+            <li class="list-group-item"><a href="mailto:nourbalaha0@gmail.com" class="card-text">nourbalaha0@gmail.com</a></li>
+            <li class="list-group-item">
+              <p class="card-text">GitHub: <a href="https://github.com/nourbalaha/">https://github.com/nourbalaha/</a>
+              </p>
+            </li>
+            <li class="list-group-item">
+              <p class="card-text"><a href="www.twitter.com/nourbalaha"> @nourbalaha</a></p>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+</div>
 {% endblock %}

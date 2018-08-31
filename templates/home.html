@@ -2,8 +2,9 @@
 
 {% block body %}
     <div class="jumbotron text-center">
-        <h1>Welcome to flask app</h1>
-        <p class="lead">this app is built by the flask framework</p>
+        <h1>Welcome to My Blog</h1>
+        <img src="http://www.aaronweiche.com/wp-content/uploads/2012/09/blog-background.jpg" class="img-fluid" alt="">
+        <p class="lead">What is in your mind today?</p>
         {% if session.logged_in == NULL %}
             <a href="/register" class="btn btn-primary btn-lg">Register</a>
             <a href="/login" class="btn btn-success btn-lg">Login</a>
