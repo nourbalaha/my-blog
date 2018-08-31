@@ -1,15 +1,15 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
-from data import Articles
-from flask_sqlalchemy import SQLAlchemy
+# from data import Articles
+# from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost:5432/users'
-db = SQLAlchemy(app)
-Articles = Articles()
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost:5432/users'
+# db = SQLAlchemy(app)
+# Articles = Articles()
 
 
 @app.route("/")
