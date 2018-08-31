@@ -1,16 +1,10 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
-# from data import Articles
-# from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost:5432/users'
-# db = SQLAlchemy(app)
-# Articles = Articles()
-
 
 @app.route("/")
 def home():
@@ -66,11 +60,6 @@ def register():
         email = form.email.data
         username = form.username.data
         password = sha256_crypt.encrypt(str(form.password.data))
-
-        eng = create_engine('postgresql:///users')
-        con = eng.connect()
-        con.execute("INSERT INTO users(name,email,username,password) VALUES(%s,%s,%s,%s)",(name,email,username,password))
-        con.close()
 
         flash("You are now registered and can log in","success")
 
