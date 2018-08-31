@@ -3,6 +3,8 @@
 * you can create, edit, update and delete your blogs.
 * created using Python, Flask and Postgres.
 
+![My Blog App](img/img.png)
+
 created by:
 Nour Balaha
 
